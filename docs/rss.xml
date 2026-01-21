@@ -1,2 +1,26 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Thu, 04 Dec 2025 15:33:53 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>Test</title><link>https://SDJJin1.github.io/post/Test.html</link><description>Hello World。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/Test.html</guid><pubDate>Thu, 04 Dec 2025 15:33:21 +0000</pubDate></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Wed, 21 Jan 2026 13:15:44 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw0</title><link>https://SDJJin1.github.io/post/GAMES101%20hw0.html</link><description>照题目模拟即可
+``` c++
+#include&lt;cmath&gt;
+#include&lt;eigen3/Eigen/Core&gt;
+#include&lt;eigen3/Eigen/Dense&gt;
+#include&lt;iostream&gt;
+
+int main(){
+    float arc1 = 45.0 / 180.0 * acos(-1);
+    Eigen::Vector3f ans(2.0, 1.0, 1.0);
+    Eigen::Matrix3f Rot;
+    Rot &lt;&lt; std::cos(arc1), std::sin(-arc1), 0,
+            std::sin(arc1), std::cos(arc1), 0,
+            0, 0, 1;
+    ans = Rot * ans;
+    Eigen::Matrix3f Trans;
+    Trans &lt;&lt; 1.0, 0.0, 1.0,
+            0.0, 1.0, 2.0,
+            0.0, 0.0, 1.0;
+    ans = Trans * ans;
+    std::cout &lt;&lt; ans &lt;&lt; std::endl;
+
+    return 0;
+}
+```。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/GAMES101%20hw0.html</guid><pubDate>Wed, 21 Jan 2026 13:15:18 +0000</pubDate></item><item><title>Test</title><link>https://SDJJin1.github.io/post/Test.html</link><description>Hello World。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/Test.html</guid><pubDate>Thu, 04 Dec 2025 15:33:21 +0000</pubDate></item></channel></rss>
