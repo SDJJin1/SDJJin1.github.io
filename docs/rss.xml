@@ -1,5 +1,74 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Wed, 21 Jan 2026 13:15:44 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw0</title><link>https://SDJJin1.github.io/post/GAMES101%20hw0.html</link><description>照题目模拟即可
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Wed, 21 Jan 2026 13:55:03 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw1</title><link>https://SDJJin1.github.io/post/GAMES101%20hw1.html</link><description>根据课上讲的求模型矩阵的方法
+
+&lt;img width='999' height='654' alt='Image' src='https://github.com/user-attachments/assets/66c8a127-94f3-4214-9559-352d19a612f4' /&gt;
+
+``` c++
+Eigen::Matrix4f get_model_matrix(float rotation_angle)
+{
+    Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
+    float arc1 = rotation_angle / 180.0 * acos(-1);
+    model &lt;&lt; std::cos(arc1), -std::sin(arc1), 0, 0,
+            std::sin(arc1), std::cos(arc1), 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1;
+
+    return model;
+}
+```
+
+要求投影矩阵，就要先得到正交矩阵，然后挤压成投影矩阵
+
+&lt;img width='1252' height='819' alt='Image' src='https://github.com/user-attachments/assets/74ec068e-2a5c-485f-9915-67671bb788ea' /&gt;
+
+求正交矩阵的方法
+
+&lt;img width='1132' height='751' alt='Image' src='https://github.com/user-attachments/assets/c9abdbb9-46a1-4245-930e-9a55006aa629' /&gt;
+
+由正交矩阵挤压成投影矩阵
+
+&lt;img width='343' height='146' alt='Image' src='https://github.com/user-attachments/assets/ae19a871-24a7-46db-a9c3-335e8ae47138' /&gt;
+
+再由fov求其他参数
+
+&lt;img width='971' height='548' alt='Image' src='https://github.com/user-attachments/assets/65d17868-4d03-4e7c-b506-da25c6fdf0ba' /&gt;
+
+``` c++
+Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
+                                      float zNear, float zFar)
+{
+    Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+
+    float t = std::tan(eye_fov) * std::abs(zNear);
+    float b = t * -1;
+    float r = aspect_ratio * t;
+    float l = r * -1;
+
+    Eigen::Matrix4f ortho;
+    ortho &lt;&lt; 2/ (r - l), 0, 0, 0,
+            0, 2/ (t - b), 0, 0,
+            0, 0, 2/ (zNear - zFar), 0,
+            0, 0, 0, 1;
+
+    Eigen::Matrix4f x;
+    x &lt;&lt; 1, 0, 0, -((r + l) / 2),
+        0, 1, 0, -((t + b) / 2),
+        0, 0, 1, -((zNear + zFar)),
+        0, 0, 0, 1;
+    
+    ortho = ortho * x;
+
+    Eigen::Matrix4f persp;
+    persp &lt;&lt; zNear, 0, 0, 0,
+            0, zNear, 0, 0,
+            0, 0, zNear, -1 * zNear * zFar,
+            0, 0, 1, 0;
+
+    projection = ortho * persp;
+
+    return projection;
+}
+```。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/GAMES101%20hw1.html</guid><pubDate>Wed, 21 Jan 2026 13:54:37 +0000</pubDate></item><item><title>GAMES101 hw0</title><link>https://SDJJin1.github.io/post/GAMES101%20hw0.html</link><description>照题目模拟即可
 ``` c++
 #include&lt;cmath&gt;
 #include&lt;eigen3/Eigen/Core&gt;
