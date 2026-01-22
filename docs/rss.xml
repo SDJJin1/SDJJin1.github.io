@@ -1,5 +1,73 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Wed, 21 Jan 2026 13:55:03 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw1</title><link>https://SDJJin1.github.io/post/GAMES101%20hw1.html</link><description>根据课上讲的求模型矩阵的方法
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Thu, 22 Jan 2026 13:26:01 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw2</title><link>https://SDJJin1.github.io/post/GAMES101%20hw2.html</link><description>首先要判断点在三角形内
+
+&lt;img width='762' height='480' alt='Image' src='https://github.com/user-attachments/assets/9396a6dd-1e88-4825-b61a-06609b5e890a' /&gt;
+
+``` c++
+static bool sameSide(Vector3f p, Vector3f a, Vector3f b, Vector3f c)
+{
+    Vector3f ab = b - a;
+    Vector3f ac = c - a;
+    Vector3f ap = p - a;
+    return (ab.cross(ac)).dot(ab.cross(ap)) &gt;= 0;
+}
+
+
+static bool insideTriangle(int x, int y, const Vector3f* _v)
+{   
+    Vector3f p = {x, y, 1};
+
+    return sameSide(p, _v[0], _v[1], _v[2]) &amp;&amp;
+           sameSide(p, _v[1], _v[2], _v[0]) &amp;&amp;
+           sameSide(p, _v[2], _v[0], _v[1]);
+
+}
+```
+
+&lt;img width='780' height='478' alt='Image' src='https://github.com/user-attachments/assets/902607b6-b3cb-4ef1-9810-aad9c87a159c' /&gt;
+
+``` c++
+void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) {
+    auto v = t.toVector4();
+
+    int minx = INT_MAX;
+    int maxx = INT_MIN;
+    int miny = INT_MAX;
+    int maxy = INT_MIN;
+
+    for(auto&amp; i : v)
+    {
+        minx = i.x() &lt; minx ? i.x() : minx;
+        miny = i.y() &lt; miny ? i.y() : miny;
+        maxx = i.x() &gt; maxx ? i.x() : maxx;
+        maxy = i.y() &gt; maxy ? i.y() : maxy;
+    }
+    
+    for(int i = minx; i &lt;= maxx; i++)
+    {
+        for(int j = miny; j &lt;= maxy; j++)
+        {
+            float x = i + 0.5f;
+            float y = j + 0.5f;
+
+            if(insideTriangle(x, y, t.v))
+            {
+                auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                z_interpolated *= w_reciprocal;
+                
+                int index = get_index(i, j);
+                if(z_interpolated &lt; depth_buf[index])
+                {
+                    depth_buf[index] = z_interpolated;
+                    set_pixel(Eigen::Vector3f(i, j, z_interpolated), t.getColor());
+                }
+            }
+        }
+    }
+}
+```。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/GAMES101%20hw2.html</guid><pubDate>Thu, 22 Jan 2026 13:25:30 +0000</pubDate></item><item><title>GAMES101 hw1</title><link>https://SDJJin1.github.io/post/GAMES101%20hw1.html</link><description>根据课上讲的求模型矩阵的方法
 
 &lt;img width='999' height='654' alt='Image' src='https://github.com/user-attachments/assets/66c8a127-94f3-4214-9559-352d19a612f4' /&gt;
 
