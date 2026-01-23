@@ -1,5 +1,303 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Thu, 22 Jan 2026 13:26:01 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw2</title><link>https://SDJJin1.github.io/post/GAMES101%20hw2.html</link><description>首先要判断点在三角形内
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Fri, 23 Jan 2026 14:59:23 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw3</title><link>https://SDJJin1.github.io/post/GAMES101%20hw3.html</link><description>hw3和hw2在rasterize_triangle函数上的区别是需要自己计算插值
+
+``` c++
+void rst::rasterizer::rasterize_triangle(const Triangle&amp; t, const std::array&lt;Eigen::Vector3f, 3&gt;&amp; view_pos) 
+{
+    auto v = t.toVector4();
+
+    int minx = INT_MAX;
+    int maxx = INT_MIN;
+    int miny = INT_MAX;
+    int maxy = INT_MIN;
+
+    for(auto&amp; i : v)
+    {
+        minx = i.x() &lt; minx ? i.x() : minx;
+        miny = i.y() &lt; miny ? i.y() : miny;
+        maxx = i.x() &gt; maxx ? i.x() : maxx;
+        maxy = i.y() &gt; maxy ? i.y() : maxy;
+    }
+
+    for(int i = minx; i &lt;= maxx; i++)
+    {
+        for(int j = miny; j &lt;= maxy; j++)
+        {
+            float x = i + 0.5f;
+            float y = j + 0.5f;
+
+            if(insideTriangle(x, y, t.v))
+            {
+                auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                float Z = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma/v[2].w());
+    			float zp = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+    		    zp *= Z;
+                
+                int index = get_index(i, j);
+                if(zp &lt; depth_buf[index])
+                {
+                    auto interpolated_color = interpolate(alpha, beta, gamma, t.color[0], t.color[1], t.color[2], 1);
+                    auto interpolated_normal = interpolate(alpha, beta, gamma, t.normal[0], t.normal[1], t.normal[2], 1).normalized();
+                    auto interpolated_texcoords = interpolate(alpha, beta, gamma, t.tex_coords[0], t.tex_coords[1], t.tex_coords[2], 1);
+    			    auto interpolated_shadingcoords = interpolate(alpha, beta, gamma, view_pos[0], view_pos[1], view_pos[2], 1);
+                    
+                    fragment_shader_payload payload(interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &amp;*texture : nullptr);
+                    payload.view_pos = interpolated_shadingcoords;
+			  depth_buf[index] = zp;
+                    auto pixel_color = fragment_shader(payload);
+
+                    set_pixel(Eigen::Vector2i(i, j), pixel_color);
+                }
+            }
+        }
+    }
+}
+```
+
+完成后就可以得到
+
+&lt;img width='700' height='700' alt='Image' src='https://github.com/user-attachments/assets/708b1b64-2b6d-4cc7-995f-efd79ce57af9' /&gt;
+
+Blinn-Phong模型的公式
+
+&lt;img width='1003' height='633' alt='Image' src='https://github.com/user-attachments/assets/a78e832d-0622-47b5-a728-3a2e3745d473' /&gt;
+
+``` c++
+Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload&amp; payload)
+{
+    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);
+    Eigen::Vector3f kd = payload.color;
+    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);
+
+    auto l1 = light{{20, 20, 20}, {500, 500, 500}};
+    auto l2 = light{{-20, 20, 0}, {500, 500, 500}};
+
+    std::vector&lt;light&gt; lights = {l1, l2};
+    Eigen::Vector3f amb_light_intensity{10, 10, 10};
+    Eigen::Vector3f eye_pos{0, 0, 10};
+
+    float p = 150;
+
+    Eigen::Vector3f color = payload.color;
+    Eigen::Vector3f point = payload.view_pos;
+    Eigen::Vector3f normal = payload.normal;
+
+    Eigen::Vector3f result_color = {0, 0, 0};
+    for (auto&amp; light : lights)
+    {
+        Eigen::Vector3f light_direction = (light.position - point).normalized();
+        Eigen::Vector3f view_direction = (eye_pos - point).normalized();
+        Eigen::Vector3f half_vector = (light_direction + view_direction).normalized();
+
+        float reflection_intensity = std::max(0.0f, half_vector.dot(normal));
+
+        float light_intensity_attenuation = (light.position - point).dot(light.position - point);
+
+        Eigen::Vector3f diffuse_reflection = kd.cwiseProduct(light.intensity / light_intensity_attenuation);
+        diffuse_reflection *= reflection_intensity;
+
+        Eigen::Vector3f high_lights = ks.cwiseProduct(light.intensity / light_intensity_attenuation);
+        high_lights *= std::pow(reflection_intensity, p);
+
+        result_color += (diffuse_reflection + high_lights);
+        
+    }
+
+    Eigen::Vector3f ambient_light_reflection = ka.cwiseProduct(amb_light_intensity);
+
+    result_color += ambient_light_reflection;
+
+    return result_color * 255.f;
+}
+```
+就可以得到
+
+&lt;img width='700' height='700' alt='Image' src='https://github.com/user-attachments/assets/ce183f1d-4fcf-4a16-9dae-bff3e108d667' /&gt;
+
+按题目的要求，将纹理颜色视为公式中的kd
+``` c++
+Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload&amp; payload)
+{
+    Eigen::Vector3f return_color = {0, 0, 0};
+    if (payload.texture)
+    {
+     return_color = payload.texture-&gt;getColor(payload.tex_coords.x(), payload.tex_coords.y());
+
+    }
+    Eigen::Vector3f texture_color;
+    texture_color &lt;&lt; return_color.x(), return_color.y(), return_color.z();
+
+    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);
+    Eigen::Vector3f kd = texture_color / 255.f;
+    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);
+
+    auto l1 = light{{20, 20, 20}, {500, 500, 500}};
+    auto l2 = light{{-20, 20, 0}, {500, 500, 500}};
+
+    std::vector&lt;light&gt; lights = {l1, l2};
+    Eigen::Vector3f amb_light_intensity{10, 10, 10};
+    Eigen::Vector3f eye_pos{0, 0, 10};
+
+    float p = 150;
+
+    Eigen::Vector3f color = texture_color;
+    Eigen::Vector3f point = payload.view_pos;
+    Eigen::Vector3f normal = payload.normal;
+
+    Eigen::Vector3f result_color = {0, 0, 0};
+
+    for (auto&amp; light : lights)
+    {
+        Eigen::Vector3f light_direction = (light.position - point).normalized();
+        Eigen::Vector3f view_direction = (eye_pos - point).normalized();
+        Eigen::Vector3f half_vector = (light_direction + view_direction).normalized();
+
+        float reflection_intensity = std::max(0.0f, half_vector.dot(normal));
+
+        float light_intensity_attenuation = (light.position - point).dot(light.position - point);
+
+        Eigen::Vector3f diffuse_reflection = kd.cwiseProduct(light.intensity / light_intensity_attenuation);
+        diffuse_reflection *= reflection_intensity;
+
+        Eigen::Vector3f high_lights = ks.cwiseProduct(light.intensity / light_intensity_attenuation);
+        high_lights *= std::pow(reflection_intensity, p);
+
+        result_color += (diffuse_reflection + high_lights);
+    }
+        Eigen::Vector3f ambient_light_reflection = ka.cwiseProduct(amb_light_intensity);
+
+        result_color += ambient_light_reflection;
+
+    return result_color * 255.f;
+}
+```
+
+&lt;img width='700' height='700' alt='Image' src='https://github.com/user-attachments/assets/b006f374-e3bd-4c85-84d8-f5c362f1c4e9' /&gt;
+
+bump
+``` c++
+Eigen::Vector3f bump_fragment_shader(const fragment_shader_payload&amp; payload)
+{
+    
+    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);
+    Eigen::Vector3f kd = payload.color;
+    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);
+
+    auto l1 = light{{20, 20, 20}, {500, 500, 500}};
+    auto l2 = light{{-20, 20, 0}, {500, 500, 500}};
+
+    std::vector&lt;light&gt; lights = {l1, l2};
+    Eigen::Vector3f amb_light_intensity{10, 10, 10};
+    Eigen::Vector3f eye_pos{0, 0, 10};
+
+    float p = 150;
+
+    Eigen::Vector3f color = payload.color; 
+    Eigen::Vector3f point = payload.view_pos;
+    Eigen::Vector3f normal = payload.normal;
+
+
+    float kh = 0.2, kn = 0.1;
+
+ 
+    float x = normal.x();
+    float y = normal.y();
+    float z = normal.z();
+    Eigen::Vector3f t = {-x*y/sqrt(x*x+z*z),sqrt(x*x+z*z),-z*y/sqrt(x*x+z*z)};
+    Eigen::Vector3f b = normal.cross(t);
+    Eigen::Matrix3f TBN;
+    TBN &lt;&lt; t.x(), b.x(), normal.x(), t.y(), b.y(), normal.y(), t.z(), b.z(), normal.z();
+    float u = payload.tex_coords.x();
+    float v = payload.tex_coords.y();
+    float w = payload.texture-&gt;width;
+    float h = payload.texture-&gt;height;
+    float dU = kh * kn *(payload.texture-&gt;getColor(u + 1.0 / w, v).norm() - payload.texture-&gt;getColor(u, v).norm());
+    float dV = kh * kn *(payload.texture-&gt;getColor(u, v + 1.0 / h).norm() - payload.texture-&gt;getColor(u, v).norm());
+
+    Eigen::Vector3f ln = {-dU, -dV, 1};
+    normal = (TBN * ln).normalized();
+
+    Eigen::Vector3f result_color = {0, 0, 0};
+    result_color = normal;
+
+    return result_color * 255.f;
+}
+```
+&lt;img width='700' height='700' alt='Image' src='https://github.com/user-attachments/assets/cc0e7179-98de-41f4-bd74-f0cc7bac9d1c' /&gt;
+
+displacement
+``` c++
+Eigen::Vector3f displacement_fragment_shader(const fragment_shader_payload&amp; payload)
+{
+    
+    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);
+    Eigen::Vector3f kd = payload.color;
+    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);
+
+    auto l1 = light{{20, 20, 20}, {500, 500, 500}};
+    auto l2 = light{{-20, 20, 0}, {500, 500, 500}};
+
+    std::vector&lt;light&gt; lights = {l1, l2};
+    Eigen::Vector3f amb_light_intensity{10, 10, 10};
+    Eigen::Vector3f eye_pos{0, 0, 10};
+
+    float p = 150;
+
+    Eigen::Vector3f color = payload.color; 
+    Eigen::Vector3f point = payload.view_pos;
+    Eigen::Vector3f normal = payload.normal;
+
+    float kh = 0.2, kn = 0.1;
+    
+    float x = normal.x();
+    float y = normal.y();
+    float z = normal.z();
+    Eigen::Vector3f t = {-x*y/sqrt(x*x+z*z),sqrt(x*x+z*z),-z*y/sqrt(x*x+z*z)};
+    Eigen::Vector3f b = normal.cross(t);
+    Eigen::Matrix3f TBN;
+    TBN &lt;&lt; t.x(), b.x(), normal.x(), t.y(), b.y(), normal.y(), t.z(), b.z(), normal.z();
+    float u = payload.tex_coords.x();
+    float v = payload.tex_coords.y();
+    float w = payload.texture-&gt;width;
+    float h = payload.texture-&gt;height;
+    float dU = kh * kn *(payload.texture-&gt;getColor(u + 1.0 / w, v).norm() - payload.texture-&gt;getColor(u, v).norm());
+    float dV = kh * kn *(payload.texture-&gt;getColor(u, v + 1.0 / h).norm() - payload.texture-&gt;getColor(u, v).norm());
+
+    Eigen::Vector3f ln = {-dU, -dV, 1};
+    normal = (TBN * ln).normalized();
+
+
+    Eigen::Vector3f result_color = {0, 0, 0};
+
+    for (auto&amp; light : lights)
+    {
+        Eigen::Vector3f light_direction = (light.position - point).normalized();
+        Eigen::Vector3f view_direction = (eye_pos - point).normalized();
+        Eigen::Vector3f half_vector = (light_direction + view_direction).normalized();
+
+        float reflection_intensity = std::max(0.0f, half_vector.dot(normal));
+
+        float light_intensity_attenuation = (light.position - point).dot(light.position - point);
+
+        Eigen::Vector3f diffuse_reflection = kd.cwiseProduct(light.intensity / light_intensity_attenuation);
+        diffuse_reflection *= reflection_intensity;
+
+        Eigen::Vector3f high_lights = ks.cwiseProduct(light.intensity / light_intensity_attenuation);
+        high_lights *= std::pow(reflection_intensity, p);
+
+        result_color += (diffuse_reflection + high_lights);
+
+
+    }
+
+    Eigen::Vector3f ambient_light_reflection = ka.cwiseProduct(amb_light_intensity);
+
+    result_color += ambient_light_reflection;
+    return result_color * 255.f;
+}
+```
+
+&lt;img width='700' height='700' alt='Image' src='https://github.com/user-attachments/assets/88b7701e-5797-4bb2-aa3f-ee47fd00b165' /&gt;。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/GAMES101%20hw3.html</guid><pubDate>Fri, 23 Jan 2026 14:58:54 +0000</pubDate></item><item><title>GAMES101 hw2</title><link>https://SDJJin1.github.io/post/GAMES101%20hw2.html</link><description>首先要判断点在三角形内
 
 &lt;img width='762' height='480' alt='Image' src='https://github.com/user-attachments/assets/9396a6dd-1e88-4825-b61a-06609b5e890a' /&gt;
 
