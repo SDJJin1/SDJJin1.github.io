@@ -1,5 +1,126 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Fri, 23 Jan 2026 16:34:56 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw5</title><link>https://SDJJin1.github.io/post/GAMES101%20hw5.html</link><description>``` c++
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Sat, 24 Jan 2026 13:14:56 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>GAMES101 hw6</title><link>https://SDJJin1.github.io/post/GAMES101%20hw6.html</link><description>```  render c++
+void Renderer::Render(const Scene&amp; scene)
+{
+    std::vector&lt;Vector3f&gt; framebuffer(scene.width * scene.height);
+
+    float scale = tan(deg2rad(scene.fov * 0.5));
+    float imageAspectRatio = scene.width / (float)scene.height;
+    Vector3f eye_pos(-1, 5, 10);
+    int m = 0;
+    for (uint32_t j = 0; j &lt; scene.height; ++j) {
+        for (uint32_t i = 0; i &lt; scene.width; ++i) {
+            // generate primary ray direction
+            float x = (2 * (i + 0.5) / (float)scene.width - 1) *
+                      imageAspectRatio * scale;
+            float y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
+            
+            Vector3f dir = Vector3f(x, y, -1);
+            dir = normalize(dir);
+            framebuffer[m++] = scene.castRay(Ray(eye_pos, dir), 0);
+        }
+        UpdateProgress(j / (float)scene.height);
+    }
+    UpdateProgress(1.f);
+
+    // save framebuffer to file
+    FILE* fp = fopen('binary.ppm', 'wb');
+    (void)fprintf(fp, 'P6\n%d %d\n255\n', scene.width, scene.height);
+    for (auto i = 0; i &lt; scene.height * scene.width; ++i) {
+        static unsigned char color[3];
+        color[0] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].x));
+        color[1] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].y));
+        color[2] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].z));
+        fwrite(color, 1, 3, fp);
+    }
+    fclose(fp);    
+}
+```
+
+``` c++
+inline Intersection Triangle::getIntersection(Ray ray)
+{
+    Intersection inter;
+
+    if (dotProduct(ray.direction, normal) &gt; 0)
+        return inter;
+    double u, v, t_tmp = 0;
+    Vector3f pvec = crossProduct(ray.direction, e2);
+    double det = dotProduct(e1, pvec);
+    if (fabs(det) &lt; EPSILON)
+        return inter;
+
+    double det_inv = 1. / det;
+    Vector3f tvec = ray.origin - v0;
+    u = dotProduct(tvec, pvec) * det_inv;
+    if (u &lt; 0 || u &gt; 1)
+        return inter;
+    Vector3f qvec = crossProduct(tvec, e1);
+    v = dotProduct(ray.direction, qvec) * det_inv;
+    if (v &lt; 0 || u + v &gt; 1)
+        return inter;
+    t_tmp = dotProduct(e2, qvec) * det_inv;
+
+    inter.happened = true;
+    inter.coords = ray(t_tmp);
+    inter.normal = normal;
+    inter.distance = t_tmp;
+    inter.obj = this;
+    inter.m = m;
+
+    return inter;
+}
+``` 
+
+``` c++
+inline bool Bounds3::IntersectP(const Ray&amp; ray, const Vector3f&amp; invDir,
+                                const std::array&lt;int, 3&gt;&amp; dirIsNeg) const
+{
+    Vector3f t_min = (pMin - ray.origin) * invDir;
+    Vector3f t_max = (pMax - ray.origin) * invDir;
+
+    float enter_x = dirIsNeg[0] ? t_min.x : t_max.x;
+    float enter_y = dirIsNeg[1] ? t_min.y : t_max.y;
+    float enter_z = dirIsNeg[2] ? t_min.z : t_max.z;
+    float exit_x = dirIsNeg[0] ? t_max.x : t_min.x;
+    float exit_y = dirIsNeg[1] ? t_max.y : t_min.y;
+    float exit_z = dirIsNeg[2] ? t_max.z : t_min.z;
+    
+    float t_enter = fmax(enter_x, fmax(enter_y, enter_z));
+    float t_exit = fmin(exit_x, fmin(exit_y, exit_z));
+
+    return t_enter &lt; t_exit &amp;&amp; t_exit &gt;= 0;
+}
+```
+
+
+``` c++
+Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray&amp; ray) const
+{
+    Vector3f invDir = ray.direction_inv;
+    Vector3f rayDir = ray.direction;
+    std::array&lt;int, 3&gt; dirIsNeg = {
+        rayDir.x &gt; 0 ? 1 : 0,
+        rayDir.y &gt; 0 ? 1 : 0,
+        rayDir.z &gt; 0 ? 1 : 0
+    };
+
+    if(!node-&gt;bounds.IntersectP(ray, invDir, dirIsNeg))
+    {
+        return {};
+    }
+
+    if(node-&gt;object)
+    {
+        return node-&gt;object-&gt;getIntersection(ray);
+    }
+
+    Intersection hit1 = getIntersection(node-&gt;left, ray);
+    Intersection hit2 = getIntersection(node-&gt;right, ray);
+    
+    return hit1.distance &lt; hit2.distance ? hit1 : hit2;
+}
+```。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/GAMES101%20hw6.html</guid><pubDate>Sat, 24 Jan 2026 13:14:28 +0000</pubDate></item><item><title>GAMES101 hw5</title><link>https://SDJJin1.github.io/post/GAMES101%20hw5.html</link><description>``` c++
 void Renderer::Render(const Scene&amp; scene)
 {
     std::vector&lt;Vector3f&gt; framebuffer(scene.width * scene.height);
