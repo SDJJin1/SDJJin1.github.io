@@ -1,5 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Fri, 20 Feb 2026 16:43:06 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>Games103 hw2</title><link>https://SDJJin1.github.io/post/Games103%20hw2.html</link><description>``` c++
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Blog Title</title><link>https://SDJJin1.github.io</link><description>Blog description</description><copyright>Blog Title</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://SDJJin1.github.io</link></image><lastBuildDate>Sun, 22 Feb 2026 13:20:00 +0000</lastBuildDate><managingEditor>Blog Title</managingEditor><ttl>60</ttl><webMaster>Blog Title</webMaster><item><title>Games103 hw3</title><link>https://SDJJin1.github.io/post/Games103%20hw3.html</link><description>补全Start函数中的部分
+``` C++
+inv_Dm = new Matrix4x4[tet_number];
+		for(int i = 0; i &lt; tet_number; i++)
+		{
+			Matrix4x4 Dm = Build_Edge_Matrix(i);
+			inv_Dm[i] = Dm.inverse;
+		}
+```
+
+Build_Edge_Matrix函数
+```
+Matrix4x4 Build_Edge_Matrix(int tet)
+    {
+    	Matrix4x4 ret=Matrix4x4.zero;
+    	//TODO: Need to build edge matrix here.
+
+	    for (int i = 0; i &lt; 3; i++)//使用 tet 四面体的顶点坐标构建边矩阵。</description><guid isPermaLink="true">https://SDJJin1.github.io/post/Games103%20hw3.html</guid><pubDate>Sun, 22 Feb 2026 13:19:32 +0000</pubDate></item><item><title>Games103 hw2</title><link>https://SDJJin1.github.io/post/Games103%20hw2.html</link><description>``` c++
 void Get_Gradient(Vector3[] X, Vector3[] X_hat, float t, Vector3[] G)
 	{
 		for (int i = 0; i &lt; G.Length; i++)
