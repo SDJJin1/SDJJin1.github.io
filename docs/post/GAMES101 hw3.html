@@ -731,9 +731,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 }</pre></div>
 <p>完成后就可以得到</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/708b1b64-2b6d-4cc7-995f-efd79ce57af9"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/708b1b64-2b6d-4cc7-995f-efd79ce57af9" style="max-width: 100%; height: auto; max-height: 700px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/708b1b64-2b6d-4cc7-995f-efd79ce57af9"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/708b1b64-2b6d-4cc7-995f-efd79ce57af9" style="max-width: 100%; height: auto; max-height: 700px;; aspect-ratio: 700 / 700; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p>Blinn-Phong模型的公式</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a78e832d-0622-47b5-a728-3a2e3745d473"><img width="1003" height="633" alt="Image" src="https://github.com/user-attachments/assets/a78e832d-0622-47b5-a728-3a2e3745d473" style="max-width: 100%; height: auto; max-height: 633px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a78e832d-0622-47b5-a728-3a2e3745d473"><img width="1003" height="633" alt="Image" src="https://github.com/user-attachments/assets/a78e832d-0622-47b5-a728-3a2e3745d473" style="max-width: 100%; height: auto; max-height: 633px;; aspect-ratio: 1003 / 633; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">Eigen::Vector3f <span class="pl-en">phong_fragment_shader</span>(<span class="pl-k">const</span> fragment_shader_payload&amp; payload)
 {
     Eigen::Vector3f ka = <span class="pl-c1">Eigen::Vector3f</span>(<span class="pl-c1">0.005</span>, <span class="pl-c1">0.005</span>, <span class="pl-c1">0.005</span>);
@@ -781,7 +781,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">return</span> result_color * <span class="pl-c1">255</span>.<span class="pl-smi">f</span>;
 }</pre></div>
 <p>就可以得到</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ce183f1d-4fcf-4a16-9dae-bff3e108d667"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/ce183f1d-4fcf-4a16-9dae-bff3e108d667" style="max-width: 100%; height: auto; max-height: 700px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ce183f1d-4fcf-4a16-9dae-bff3e108d667"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/ce183f1d-4fcf-4a16-9dae-bff3e108d667" style="max-width: 100%; height: auto; max-height: 700px;; aspect-ratio: 700 / 700; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p>按题目的要求，将纹理颜色视为公式中的kd</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">Eigen::Vector3f <span class="pl-en">texture_fragment_shader</span>(<span class="pl-k">const</span> fragment_shader_payload&amp; payload)
 {
@@ -837,7 +837,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
     <span class="pl-k">return</span> result_color * <span class="pl-c1">255</span>.<span class="pl-smi">f</span>;
 }</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b006f374-e3bd-4c85-84d8-f5c362f1c4e9"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/b006f374-e3bd-4c85-84d8-f5c362f1c4e9" style="max-width: 100%; height: auto; max-height: 700px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b006f374-e3bd-4c85-84d8-f5c362f1c4e9"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/b006f374-e3bd-4c85-84d8-f5c362f1c4e9" style="max-width: 100%; height: auto; max-height: 700px;; aspect-ratio: 700 / 700; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p>bump</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">Eigen::Vector3f <span class="pl-en">bump_fragment_shader</span>(<span class="pl-k">const</span> fragment_shader_payload&amp; payload)
 {
@@ -885,7 +885,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
     <span class="pl-k">return</span> result_color * <span class="pl-c1">255</span>.<span class="pl-smi">f</span>;
 }</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/cc0e7179-98de-41f4-bd74-f0cc7bac9d1c"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/cc0e7179-98de-41f4-bd74-f0cc7bac9d1c" style="max-width: 100%; height: auto; max-height: 700px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/cc0e7179-98de-41f4-bd74-f0cc7bac9d1c"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/cc0e7179-98de-41f4-bd74-f0cc7bac9d1c" style="max-width: 100%; height: auto; max-height: 700px;; aspect-ratio: 700 / 700; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p>displacement</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">Eigen::Vector3f <span class="pl-en">displacement_fragment_shader</span>(<span class="pl-k">const</span> fragment_shader_payload&amp; payload)
 {
@@ -955,7 +955,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     result_color += ambient_light_reflection;
     <span class="pl-k">return</span> result_color * <span class="pl-c1">255</span>.<span class="pl-smi">f</span>;
 }</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/88b7701e-5797-4bb2-aa3f-ee47fd00b165"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/88b7701e-5797-4bb2-aa3f-ee47fd00b165" style="max-width: 100%; height: auto; max-height: 700px;"></a></p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/88b7701e-5797-4bb2-aa3f-ee47fd00b165"><img width="700" height="700" alt="Image" src="https://github.com/user-attachments/assets/88b7701e-5797-4bb2-aa3f-ee47fd00b165" style="max-width: 100%; height: auto; max-height: 700px;; aspect-ratio: 700 / 700; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
