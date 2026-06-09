@@ -370,7 +370,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">double</span> u, v, t_tmp = <span class="pl-c1">0</span>;
     Vector3f pvec = <span class="pl-c1">crossProduct</span>(ray.<span class="pl-smi">direction</span>, <span class="pl-c1">e2</span>);
     <span class="pl-k">double</span> det = <span class="pl-c1">dotProduct</span>(<span class="pl-c1">e1</span>, pvec);
-    <span class="pl-k">if</span> (<span class="pl-c1">fabs</span>(det) &lt; EPSILON)
+    <span class="pl-k">if</span> (<span class="pl-c1">fabs</span>(det) &lt; <span class="pl-c1">EPSILON</span>)
         <span class="pl-k">return</span> inter;
 
     <span class="pl-k">double</span> det_inv = <span class="pl-c1">1</span>. / det;

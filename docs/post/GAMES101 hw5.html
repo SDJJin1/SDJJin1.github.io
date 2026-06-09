@@ -244,7 +244,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 
     <span class="pl-c"><span class="pl-c">//</span> save framebuffer to file</span>
-    FILE* fp = <span class="pl-c1">fopen</span>(<span class="pl-s"><span class="pl-pds">"</span>binary.ppm<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>wb<span class="pl-pds">"</span></span>);
+    <span class="pl-c1">FILE</span>* fp = <span class="pl-c1">fopen</span>(<span class="pl-s"><span class="pl-pds">"</span>binary.ppm<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>wb<span class="pl-pds">"</span></span>);
     (<span class="pl-k">void</span>)<span class="pl-c1">fprintf</span>(fp, <span class="pl-s"><span class="pl-pds">"</span>P6<span class="pl-cce">\n</span>%d %d<span class="pl-cce">\n</span>255<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>, scene.<span class="pl-smi">width</span>, scene.<span class="pl-smi">height</span>);
     <span class="pl-k">for</span> (<span class="pl-k">auto</span> i = <span class="pl-c1">0</span>; i &lt; scene.<span class="pl-smi">height</span> * scene.<span class="pl-smi">width</span>; ++i) {
         <span class="pl-k">static</span> <span class="pl-k">unsigned</span> <span class="pl-k">char</span> color[<span class="pl-c1">3</span>];
@@ -262,13 +262,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     Vector3f <span class="pl-c1">E1</span> = v1 - v0,
     <span class="pl-c1">E2</span> = v2 - v0,
     S = orig - v0,
-    S1 = <span class="pl-c1">crossProduct</span>(dir, <span class="pl-c1">E2</span>),
-    S2 = <span class="pl-c1">crossProduct</span>(S, <span class="pl-c1">E1</span>);
+    <span class="pl-c1">S1</span> = <span class="pl-c1">crossProduct</span>(dir, <span class="pl-c1">E2</span>),
+    <span class="pl-c1">S2</span> = <span class="pl-c1">crossProduct</span>(S, <span class="pl-c1">E1</span>);
 
-    <span class="pl-k">float</span> S1E1 = <span class="pl-c1">dotProduct</span>(S1, <span class="pl-c1">E1</span>);
-    tnear = <span class="pl-c1">dotProduct</span>(S2, <span class="pl-c1">E2</span>) / S1E1;
-    u = <span class="pl-c1">dotProduct</span>(S1, S) / S1E1;
-    v = <span class="pl-c1">dotProduct</span>(S2, dir) / S1E1;
+    <span class="pl-k">float</span> <span class="pl-c1">S1E1</span> = <span class="pl-c1">dotProduct</span>(<span class="pl-c1">S1</span>, <span class="pl-c1">E1</span>);
+    tnear = <span class="pl-c1">dotProduct</span>(<span class="pl-c1">S2</span>, <span class="pl-c1">E2</span>) / <span class="pl-c1">S1E1</span>;
+    u = <span class="pl-c1">dotProduct</span>(<span class="pl-c1">S1</span>, S) / <span class="pl-c1">S1E1</span>;
+    v = <span class="pl-c1">dotProduct</span>(<span class="pl-c1">S2</span>, dir) / <span class="pl-c1">S1E1</span>;
     <span class="pl-k">if</span>(tnear &lt; <span class="pl-c1">0</span>) <span class="pl-k">return</span> <span class="pl-c1">false</span>;
     <span class="pl-k">if</span>((<span class="pl-c1">1</span> - u - v) &gt; <span class="pl-c1">0</span> &amp;&amp; u &gt; <span class="pl-c1">0</span> &amp;&amp; v &gt; <span class="pl-c1">0</span>) <span class="pl-k">return</span> <span class="pl-c1">true</span>;
     <span class="pl-k">return</span> <span class="pl-c1">false</span>;

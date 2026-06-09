@@ -220,20 +220,20 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         <span class="pl-c"><span class="pl-c">//</span>Get x,ws,NN,emit from inter</span>
         Vector3f x = light_point_inter.<span class="pl-smi">coords</span>;
         Vector3f ws = <span class="pl-c1">normalize</span>(x-p);
-        Vector3f NN = light_point_inter.<span class="pl-smi">normal</span>;
+        Vector3f <span class="pl-c1">NN</span> = light_point_inter.<span class="pl-smi">normal</span>;
         Vector3f emit = light_point_inter.<span class="pl-smi">emit</span>;
         <span class="pl-k">float</span> distance_pTox = (x - p).<span class="pl-c1">norm</span>();
         <span class="pl-c"><span class="pl-c">//</span>Shoot a ray from p to x</span>
         Vector3f p_deviation = (<span class="pl-c1">dotProduct</span>(ray.<span class="pl-smi">direction</span>, N) &lt; <span class="pl-c1">0</span>) ?
-                p + N * EPSILON :
-                p - N * EPSILON ;
+                p + N * <span class="pl-c1">EPSILON</span> :
+                p - N * <span class="pl-c1">EPSILON</span> ;
 
         Ray <span class="pl-smi">ray_pTox</span>(p_deviation, ws);
         <span class="pl-c"><span class="pl-c">//</span>If the ray is not blocked in the middleff</span>
         Intersection blocked_point_inter = <span class="pl-c1">Scene::intersect</span>(ray_pTox);
         <span class="pl-k">if</span> (<span class="pl-c1">abs</span>(distance_pTox - blocked_point_inter.<span class="pl-smi">distance</span> &lt; <span class="pl-c1">0.01</span> ))
         {
-            L_dir = emit * shade_point_inter.<span class="pl-smi">m</span>-&gt;<span class="pl-c1">eval</span>(wo, ws, N) * <span class="pl-c1">dotProduct</span>(ws, N) * <span class="pl-c1">dotProduct</span>(-ws, NN) / (distance_pTox * distance_pTox * pdf_light);
+            L_dir = emit * shade_point_inter.<span class="pl-smi">m</span>-&gt;<span class="pl-c1">eval</span>(wo, ws, N) * <span class="pl-c1">dotProduct</span>(ws, N) * <span class="pl-c1">dotProduct</span>(-ws, <span class="pl-c1">NN</span>) / (distance_pTox * distance_pTox * pdf_light);
         }
         <span class="pl-c"><span class="pl-c">//</span>Test Russian Roulette with probability RussianRouolette</span>
         <span class="pl-k">float</span> ksi = <span class="pl-c1">get_random_float</span>();
@@ -248,7 +248,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
             <span class="pl-k">if</span> (bounce_point_inter.<span class="pl-smi">happened</span> &amp;&amp; !bounce_point_inter.<span class="pl-smi">m</span>-&gt;<span class="pl-c1">hasEmission</span>())
             {
                 <span class="pl-k">float</span> pdf = shade_point_inter.<span class="pl-smi">m</span>-&gt;<span class="pl-c1">pdf</span>(wo, wi, N);
-                <span class="pl-k">if</span>(pdf&gt; EPSILON)
+                <span class="pl-k">if</span>(pdf&gt; <span class="pl-c1">EPSILON</span>)
                     L_indir = <span class="pl-c1">castRay</span>(ray_pTowi, depth + <span class="pl-c1">1</span>) * shade_point_inter.<span class="pl-smi">m</span>-&gt;<span class="pl-c1">eval</span>(wo, wi, N) * <span class="pl-c1">dotProduct</span>(wi, N) / (pdf *RussianRoulette);
             }
         }

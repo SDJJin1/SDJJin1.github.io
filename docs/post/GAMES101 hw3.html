@@ -684,10 +684,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 {
     <span class="pl-k">auto</span> v = t.<span class="pl-c1">toVector4</span>();
 
-    <span class="pl-k">int</span> minx = INT_MAX;
-    <span class="pl-k">int</span> maxx = INT_MIN;
-    <span class="pl-k">int</span> miny = INT_MAX;
-    <span class="pl-k">int</span> maxy = INT_MIN;
+    <span class="pl-k">int</span> minx = <span class="pl-c1">INT_MAX</span>;
+    <span class="pl-k">int</span> maxx = <span class="pl-c1">INT_MIN</span>;
+    <span class="pl-k">int</span> miny = <span class="pl-c1">INT_MAX</span>;
+    <span class="pl-k">int</span> maxy = <span class="pl-c1">INT_MIN</span>;
 
     <span class="pl-k">for</span>(<span class="pl-k">auto</span>&amp; i : v)
     {
@@ -868,8 +868,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">float</span> z = normal.<span class="pl-c1">z</span>();
     Eigen::Vector3f t = {-x*y/<span class="pl-c1">sqrt</span>(x*x+z*z),<span class="pl-c1">sqrt</span>(x*x+z*z),-z*y/<span class="pl-c1">sqrt</span>(x*x+z*z)};
     Eigen::Vector3f b = normal.<span class="pl-c1">cross</span>(t);
-    Eigen::Matrix3f TBN;
-    TBN &lt;&lt; t.<span class="pl-c1">x</span>(), b.<span class="pl-c1">x</span>(), normal.<span class="pl-c1">x</span>(), t.<span class="pl-c1">y</span>(), b.<span class="pl-c1">y</span>(), normal.<span class="pl-c1">y</span>(), t.<span class="pl-c1">z</span>(), b.<span class="pl-c1">z</span>(), normal.<span class="pl-c1">z</span>();
+    Eigen::Matrix3f <span class="pl-c1">TBN</span>;
+    <span class="pl-c1">TBN</span> &lt;&lt; t.<span class="pl-c1">x</span>(), b.<span class="pl-c1">x</span>(), normal.<span class="pl-c1">x</span>(), t.<span class="pl-c1">y</span>(), b.<span class="pl-c1">y</span>(), normal.<span class="pl-c1">y</span>(), t.<span class="pl-c1">z</span>(), b.<span class="pl-c1">z</span>(), normal.<span class="pl-c1">z</span>();
     <span class="pl-k">float</span> u = payload.<span class="pl-smi">tex_coords</span>.<span class="pl-c1">x</span>();
     <span class="pl-k">float</span> v = payload.<span class="pl-smi">tex_coords</span>.<span class="pl-c1">y</span>();
     <span class="pl-k">float</span> w = payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-smi">width</span>;
@@ -878,7 +878,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">float</span> dV = kh * kn *(payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-c1">getColor</span>(u, v + <span class="pl-c1">1.0</span> / h).<span class="pl-c1">norm</span>() - payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-c1">getColor</span>(u, v).<span class="pl-c1">norm</span>());
 
     Eigen::Vector3f ln = {-dU, -dV, <span class="pl-c1">1</span>};
-    normal = (TBN * ln).<span class="pl-c1">normalized</span>();
+    normal = (<span class="pl-c1">TBN</span> * ln).<span class="pl-c1">normalized</span>();
 
     Eigen::Vector3f result_color = {<span class="pl-c1">0</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>};
     result_color = normal;
@@ -914,8 +914,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">float</span> z = normal.<span class="pl-c1">z</span>();
     Eigen::Vector3f t = {-x*y/<span class="pl-c1">sqrt</span>(x*x+z*z),<span class="pl-c1">sqrt</span>(x*x+z*z),-z*y/<span class="pl-c1">sqrt</span>(x*x+z*z)};
     Eigen::Vector3f b = normal.<span class="pl-c1">cross</span>(t);
-    Eigen::Matrix3f TBN;
-    TBN &lt;&lt; t.<span class="pl-c1">x</span>(), b.<span class="pl-c1">x</span>(), normal.<span class="pl-c1">x</span>(), t.<span class="pl-c1">y</span>(), b.<span class="pl-c1">y</span>(), normal.<span class="pl-c1">y</span>(), t.<span class="pl-c1">z</span>(), b.<span class="pl-c1">z</span>(), normal.<span class="pl-c1">z</span>();
+    Eigen::Matrix3f <span class="pl-c1">TBN</span>;
+    <span class="pl-c1">TBN</span> &lt;&lt; t.<span class="pl-c1">x</span>(), b.<span class="pl-c1">x</span>(), normal.<span class="pl-c1">x</span>(), t.<span class="pl-c1">y</span>(), b.<span class="pl-c1">y</span>(), normal.<span class="pl-c1">y</span>(), t.<span class="pl-c1">z</span>(), b.<span class="pl-c1">z</span>(), normal.<span class="pl-c1">z</span>();
     <span class="pl-k">float</span> u = payload.<span class="pl-smi">tex_coords</span>.<span class="pl-c1">x</span>();
     <span class="pl-k">float</span> v = payload.<span class="pl-smi">tex_coords</span>.<span class="pl-c1">y</span>();
     <span class="pl-k">float</span> w = payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-smi">width</span>;
@@ -924,7 +924,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">float</span> dV = kh * kn *(payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-c1">getColor</span>(u, v + <span class="pl-c1">1.0</span> / h).<span class="pl-c1">norm</span>() - payload.<span class="pl-smi">texture</span>-&gt;<span class="pl-c1">getColor</span>(u, v).<span class="pl-c1">norm</span>());
 
     Eigen::Vector3f ln = {-dU, -dV, <span class="pl-c1">1</span>};
-    normal = (TBN * ln).<span class="pl-c1">normalized</span>();
+    normal = (<span class="pl-c1">TBN</span> * ln).<span class="pl-c1">normalized</span>();
 
 
     Eigen::Vector3f result_color = {<span class="pl-c1">0</span>, <span class="pl-c1">0</span>, <span class="pl-c1">0</span>};

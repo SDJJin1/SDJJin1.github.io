@@ -243,10 +243,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">rst::rasterizer::rasterize_triangle</span>(<span class="pl-k">const</span> Triangle&amp; t) {
     <span class="pl-k">auto</span> v = t.<span class="pl-c1">toVector4</span>();
 
-    <span class="pl-k">int</span> minx = INT_MAX;
-    <span class="pl-k">int</span> maxx = INT_MIN;
-    <span class="pl-k">int</span> miny = INT_MAX;
-    <span class="pl-k">int</span> maxy = INT_MIN;
+    <span class="pl-k">int</span> minx = <span class="pl-c1">INT_MAX</span>;
+    <span class="pl-k">int</span> maxx = <span class="pl-c1">INT_MIN</span>;
+    <span class="pl-k">int</span> miny = <span class="pl-c1">INT_MAX</span>;
+    <span class="pl-k">int</span> maxy = <span class="pl-c1">INT_MIN</span>;
 
     <span class="pl-k">for</span>(<span class="pl-k">auto</span>&amp; i : v)
     {
